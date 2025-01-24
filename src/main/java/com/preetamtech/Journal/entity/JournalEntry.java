@@ -1,7 +1,14 @@
 package com.preetamtech.Journal.entity;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "journal_entries")
 public class JournalEntry {
-    private long id;
+
+    @Id
+    private ObjectId id;
     private String title;
     private String content;
 
@@ -21,11 +28,11 @@ public class JournalEntry {
         this.title = title;
     }
 
-    public long getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 }
