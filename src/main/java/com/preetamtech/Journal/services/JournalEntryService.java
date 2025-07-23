@@ -1,7 +1,10 @@
 package com.preetamtech.Journal.services;
 
 import com.preetamtech.Journal.entity.JournalEntry;
+import com.preetamtech.Journal.entity.User;
 import com.preetamtech.Journal.repositories.JournalEntryRepository;
+import com.preetamtech.Journal.repositories.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

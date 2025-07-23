@@ -1,19 +1,22 @@
 package com.preetamtech.Journal.entity;
 
+
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "journal_entries")
+@Document(collection = "users")
 //Added @Data (Lombok annotation to get the automatic "Getter" and "Setter")
 @Data
-public class JournalEntry {
-
+public class User {
     @Id
     private ObjectId id;
+    @Indexed(unique = true)
     @NonNull
-    private String title;
-    private String content;
+    private String username;
+    @NonNull
+    private String password;
 }

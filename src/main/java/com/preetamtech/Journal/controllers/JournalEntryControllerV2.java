@@ -24,7 +24,7 @@ public class JournalEntryControllerV2 {
     }
 
     @PostMapping
-    public ResponseEntity<?> createJournal(@RequestBody JournalEntry journalEntry) {
+    public ResponseEntity<HttpStatus> createJournal(@RequestBody JournalEntry journalEntry) {
         journalEntryService.saveJournalEntry(journalEntry);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
