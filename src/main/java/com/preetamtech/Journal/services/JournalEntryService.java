@@ -17,8 +17,19 @@ public class JournalEntryService {
     @Autowired
     private JournalEntryRepository journalEntryRepository;
 
-    public void saveJournalEntry(JournalEntry journalEntry) {
-        journalEntryRepository.save(journalEntry);
+    @Autowired
+    private UserService userService;
+
+    public JournalEntry saveJournalEntry(JournalEntry journalEntry, String userName) {
+            User user = userService.findByUserName(userName);
+            if (user == null) {
+                // Handle case where user is not found, e.g., throw a custom exception
+                throw new RuntimeException("User not found with username: " + userName);
+            }
+            JournalEntry savedJournalEntry = journalEntryRepository.save(journalEntry);
+            user.getJournalEntryList().add(savedJournalEntry);
+            userService.saveUserEntry(user);
+            return savedJournalEntry; // <-- Return the saved entity
     }
 
     public List<JournalEntry>getAllJournalEntry() {
@@ -30,7 +41,7 @@ public class JournalEntryService {
     }
 
     public void deleteJournalEntry(String id) {
-        journalEntryRepository.deleteById(id);
+        journalEntryRepository.deleteById(String.valueOf(id));
     }
 
     public void updateJournalEntry(String id, JournalEntry newEntry) {

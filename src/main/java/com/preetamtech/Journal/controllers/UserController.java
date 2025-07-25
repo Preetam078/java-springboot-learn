@@ -1,6 +1,8 @@
 package com.preetamtech.Journal.controllers;
 
+import com.preetamtech.Journal.entity.JournalEntry;
 import com.preetamtech.Journal.entity.User;
+import com.preetamtech.Journal.services.JournalEntryService;
 import com.preetamtech.Journal.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private JournalEntryService journalEntryService;
 
     @GetMapping
     public List<User> getAllUsers () {
@@ -42,6 +47,8 @@ public class UserController {
     public ResponseEntity<?> deleteUserByName(@PathVariable String userName) {
         User deletedUser = userService.findByUserName(userName);
         if(deletedUser != null) {
+            List <JournalEntry> allJournalEntries = deletedUser.getJournalEntryList();
+            allJournalEntries.forEach(journalEntry -> journalEntryService.deleteJournalEntry(String.valueOf(journalEntry.getId())));
             userService.deleteUserEntry(deletedUser.getId());
             return new ResponseEntity<>(deletedUser, HttpStatus.FOUND);
         }
