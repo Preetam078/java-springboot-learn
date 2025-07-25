@@ -7,6 +7,7 @@ import com.preetamtech.Journal.repositories.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,9 @@ public class JournalEntryService {
     @Autowired
     private UserService userService;
 
+
+    //Achieve atomicity....
+    @Transactional
     public JournalEntry saveJournalEntry(JournalEntry journalEntry, String userName) {
             User user = userService.findByUserName(userName);
             if (user == null) {
