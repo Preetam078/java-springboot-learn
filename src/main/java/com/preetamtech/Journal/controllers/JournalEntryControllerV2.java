@@ -8,6 +8,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,13 @@ public class JournalEntryControllerV2 {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{userName}")
-    public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser(@PathVariable String userName) {
+    @GetMapping
+    public ResponseEntity<List<JournalEntry>> getAllJournalEntriesOfUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
         User activeUser = userService.findByUserName(userName);
+
         if(activeUser != null) {
             List<JournalEntry> allJournalEntries = activeUser.getJournalEntryList();
             return new ResponseEntity<>(allJournalEntries, HttpStatus.OK);
@@ -44,8 +50,12 @@ public class JournalEntryControllerV2 {
 
     // --- POST method ---
 
-    @PostMapping("/{userName}")
-    public ResponseEntity<JournalEntry> createJournal(@RequestBody JournalEntry journalEntry, @PathVariable String userName) {
+    @PostMapping
+    public ResponseEntity<JournalEntry> createJournal(@RequestBody JournalEntry journalEntry) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
         JournalEntry savedEntry = journalEntryService.saveJournalEntry(journalEntry, userName);
         return new ResponseEntity<>(savedEntry, HttpStatus.CREATED);
     }
