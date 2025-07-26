@@ -25,6 +25,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests(authorize -> authorize
                         // Only requests to /journal/** require authentication
                         .requestMatchers("/journal/**", "/user/**").authenticated()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll() // All other requests (including /user/**) are permitted without authentication
                 )
                 .httpBasic();

@@ -20,7 +20,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public void saveUserEntry(User user) {
         userRepository.save(user);
@@ -28,7 +28,10 @@ public class UserService {
 
     public void saveUserEntryV2(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList("USER"));
+        if(user.getRoles().isEmpty()) {
+            user.setRoles(List.of("USER"));
+        }
+
         userRepository.save(user);
     }
 
