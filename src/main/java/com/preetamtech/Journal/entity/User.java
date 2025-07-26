@@ -24,4 +24,5 @@ public class User {
     private String password;
 
     List<JournalEntry> journalEntryList = new ArrayList<>();
+    List<String> roles;
 }
