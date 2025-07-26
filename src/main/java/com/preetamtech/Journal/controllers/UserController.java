@@ -7,6 +7,8 @@ import com.preetamtech.Journal.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,31 +23,30 @@ public class UserController {
     @Autowired
     private JournalEntryService journalEntryService;
 
-    @GetMapping
-    public List<User> getAllUsers () {
-        return userService.getAllUserEntry();
-    }
+    @PutMapping
+    public ResponseEntity<?> updateUser (@RequestBody User updatedUser) {
 
-    @PostMapping
-    public void createNewUser (@RequestBody User newUser) {
-        userService.saveUserEntry(newUser);
-    }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
 
-    @PutMapping("/{userName}")
-    public ResponseEntity<?> updateUser (@RequestBody User updatedUser, @PathVariable String userName) {
         User userInDB = userService.findByUserName(userName);
         if(userInDB != null) {
             userInDB.setUsername(updatedUser.getUsername());
             userInDB.setPassword(updatedUser.getPassword());
-            userService.saveUserEntry(userInDB);
+            userService.saveUserEntryV2(userInDB);
         }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("/{userName}")
-    public ResponseEntity<?> deleteUserByName(@PathVariable String userName) {
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserByName() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+
         User deletedUser = userService.findByUserName(userName);
+
         if(deletedUser != null) {
             List <JournalEntry> allJournalEntries = deletedUser.getJournalEntryList();
             allJournalEntries.forEach(journalEntry -> journalEntryService.deleteJournalEntry(String.valueOf(journalEntry.getId())));

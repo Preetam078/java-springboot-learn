@@ -24,11 +24,12 @@ public class SpringSecurity {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // Only requests to /journal/** require authentication
-                        .requestMatchers("/journal/**").authenticated()
+                        .requestMatchers("/journal/**", "/user/**").authenticated()
                         .anyRequest().permitAll() // All other requests (including /user/**) are permitted without authentication
                 )
-                .httpBasic();   // Enable HTTP Basic Authentication
-        return http.build(); // Build and return the SecurityFilterChain
+                .httpBasic();
+        http.csrf(csrf -> csrf.disable());
+        return http.build();
     }
 
     // Define a PasswordEncoder bean for password hashing
